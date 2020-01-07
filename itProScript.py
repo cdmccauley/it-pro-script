@@ -2,6 +2,8 @@ import os
 from HTMLParser import HTMLParser
 import datetime
 
+rundate = datetime.datetime.now().strftime("%m-%d-%y")
+
 # https://stackoverflow.com/questions/11804148/parsing-html-to-get-text-inside-an-element
 class soHTMLParser(HTMLParser):
     def __init__(self):
@@ -29,7 +31,7 @@ for line in htmlFile:
 data = parser.HTMLDATA
 
 # parse data
-# dataFile = open('data-file.txt', 'w')
+dataFile = open(str(dlDirPath + os.path.sep + 'itprotv-status-' + rundate + '.txt'), 'w')
 endFlag = "All Courses"
 parseFlag = False
 startFlag = "Last Login"
@@ -37,9 +39,11 @@ skipVals = ["Activity", "Created with Sketch."]
 dataCounter = 0
 accountName = ""
 lastLogin = ""
-nameLoginList = []
+unusedLoginList = []
+usedLoginList = []
 
 for datum in data:
+    print(datum + "\n")
     if (datum == endFlag):
         break
     elif (parseFlag and not datum in skipVals):
@@ -48,18 +52,25 @@ for datum in data:
             accountName = datum.rstrip()
         if (dataCounter == 3):
             lastLogin = datum.rstrip()
-            date = datetime.datetime(2000, 1, 1) # represent no login since invited
             if (not lastLogin == ''):
                 date = datetime.datetime(int(lastLogin[:4]), int(lastLogin[5:-3]), int(lastLogin[-2:]))
-            nameLoginList.append([date, accountName])
+                usedLoginList.append([date, accountName])
+            else:
+                unusedLoginList.append(accountName)
             dataCounter = 0
     elif (datum == startFlag):
         parseFlag = True
 
-nameLoginList.sort(key=lambda x: x[0])
+# sort parsed data
+usedLoginList.sort(key=lambda x: x[0])
         
-for item in nameLoginList:
-    # dataFile.write(str(item) + "\n")
-    print(item[0].strftime("%x") + " " + item[1])
+# output to file
+dataFile.write("ITProTV Status(" + rundate + ")\n" + "\nUnused:\n")
+for item in unusedLoginList:
+    dataFile.write(item + "\n")
 
-# dataFile.close()
+dataFile.write("\nUsed:\n")
+for item in usedLoginList:
+    dataFile.write(item[0].strftime("%x") + " " + item[1] + "\n")
+
+dataFile.close()
