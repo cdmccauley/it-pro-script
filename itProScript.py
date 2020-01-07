@@ -30,9 +30,9 @@ data = parser.HTMLDATA
 
 # parse data
 # dataFile = open('data-file.txt', 'w')
-lineCounter = 0
-startFlag = 59
 endFlag = "All Courses"
+parseFlag = False
+startFlag = "Last Login"
 skipVals = ["Activity", "Created with Sketch."]
 dataCounter = 0
 accountName = ""
@@ -40,20 +40,21 @@ lastLogin = ""
 nameLoginList = []
 
 for datum in data:
-    lineCounter = lineCounter + 1
     if (datum == endFlag):
         break
-    elif (lineCounter >= startFlag and not datum in skipVals):
+    elif (parseFlag and not datum in skipVals):
         dataCounter = dataCounter + 1
         if (dataCounter == 1):
             accountName = datum.rstrip()
         if (dataCounter == 3):
             lastLogin = datum.rstrip()
             date = datetime.datetime(2000, 1, 1) # represent no login since invited
-            if (not lastLogin[12:-6] == ''):
-                date = datetime.datetime(int(lastLogin[12:-6]), int(lastLogin[17:-3]), int(lastLogin[-2:]))
-            nameLoginList.append([date.__str__(), accountName])
+            if (not lastLogin == ''):
+                date = datetime.datetime(int(lastLogin[:4]), int(lastLogin[5:-3]), int(lastLogin[-2:]))
+            nameLoginList.append([date.strftime("%x"), accountName])
             dataCounter = 0
+    elif (datum == startFlag):
+        parseFlag = True
 
 nameLoginList.sort(key=lambda x: x[0])
         
