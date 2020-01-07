@@ -51,7 +51,7 @@ for datum in data:
             date = datetime.datetime(2000, 1, 1) # represent no login since invited
             if (not lastLogin == ''):
                 date = datetime.datetime(int(lastLogin[:4]), int(lastLogin[5:-3]), int(lastLogin[-2:]))
-            nameLoginList.append([date.strftime("%x"), accountName])
+            nameLoginList.append([date, accountName])
             dataCounter = 0
     elif (datum == startFlag):
         parseFlag = True
@@ -60,6 +60,6 @@ nameLoginList.sort(key=lambda x: x[0])
         
 for item in nameLoginList:
     # dataFile.write(str(item) + "\n")
-    print(item)
+    print(item[0].strftime("%x") + " " + item[1])
 
 # dataFile.close()
