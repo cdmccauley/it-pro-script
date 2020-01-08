@@ -42,7 +42,7 @@ dataFile.write("ITProTV Status(" + rundate + ")\n")
 endFlag = "All Courses" # value encountered after last student's login date
 parseFlag = False # switched when startFlag is encountered
 startFlag = "Last Login" # value encountered before first student's name
-countRegEx = "\d{2} Available" # regex matching number of available subs
+countRegEx = r"\d{2} Available" # regex matching number of available subs
 skipVals = ["Activity", "Created with Sketch."] # unwanted repetitive values
 dataCounter = 0 # counts 1-3 to capture wanted values
 
