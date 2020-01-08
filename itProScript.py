@@ -1,5 +1,6 @@
 import os
 from HTMLParser import HTMLParser
+import re
 import datetime
 
 rundate = datetime.datetime.now().strftime("%m-%d-%y")
@@ -30,11 +31,17 @@ for line in htmlFile:
 
 data = parser.HTMLDATA
 
-# parse data
+# create/open file
 dataFile = open(str(dlDirPath + os.path.sep + 'itprotv-status-' + rundate + '.txt'), 'w')
+
+# write file header
+dataFile.write("ITProTV Status(" + rundate + ")\n")
+
+# parse data
 endFlag = "All Courses"
 parseFlag = False
 startFlag = "Last Login"
+countRegEx = "\d{2} Available"
 skipVals = ["Activity", "Created with Sketch."]
 dataCounter = 0
 accountName = ""
@@ -43,7 +50,8 @@ unusedLoginList = []
 usedLoginList = []
 
 for datum in data:
-    print(datum + "\n")
+    if (re.search(countRegEx, datum)):
+        dataFile.write(re.search(countRegEx, datum).group() + "\n")
     if (datum == endFlag):
         break
     elif (parseFlag and not datum in skipVals):
@@ -65,7 +73,7 @@ for datum in data:
 usedLoginList.sort(key=lambda x: x[0])
         
 # output to file
-dataFile.write("ITProTV Status(" + rundate + ")\n" + "\nUnused:\n")
+dataFile.write("\nUnused:\n")
 for item in unusedLoginList:
     dataFile.write(item + "\n")
 
