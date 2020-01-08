@@ -1,10 +1,13 @@
+# imports
 import os
 from HTMLParser import HTMLParser
 import re
 import datetime
 
+# get current date for file name and file header
 rundate = datetime.datetime.now().strftime("%m-%d-%y")
 
+# define custom HTML parser
 # https://stackoverflow.com/questions/11804148/parsing-html-to-get-text-inside-an-element
 class soHTMLParser(HTMLParser):
     def __init__(self):
@@ -25,10 +28,8 @@ htmlFile = open(htmlFilePath) # TODO: exception handling
 
 # parse .html file
 parser = soHTMLParser()
-
 for line in htmlFile:
     parser.feed(line)
-
 data = parser.HTMLDATA
 
 # create/open file
@@ -37,18 +38,21 @@ dataFile = open(str(dlDirPath + os.path.sep + 'itprotv-status-' + rundate + '.tx
 # write file header
 dataFile.write("ITProTV Status(" + rundate + ")\n")
 
-# parse data
-endFlag = "All Courses"
-parseFlag = False
-startFlag = "Last Login"
-countRegEx = "\d{2} Available"
-skipVals = ["Activity", "Created with Sketch."]
-dataCounter = 0
+# parse data declarations
+endFlag = "All Courses" # value encountered after last student's login date
+parseFlag = False # switched when startFlag is encountered
+startFlag = "Last Login" # value encountered before first student's name
+countRegEx = "\d{2} Available" # regex matching number of available subs
+skipVals = ["Activity", "Created with Sketch."] # unwanted repetitive values
+dataCounter = 0 # counts 1-3 to capture wanted values
+
+# data declarations
 accountName = ""
 lastLogin = ""
 unusedLoginList = []
 usedLoginList = []
 
+# parse data
 for datum in data:
     if (re.search(countRegEx, datum)):
         dataFile.write(re.search(countRegEx, datum).group() + "\n")
@@ -81,4 +85,5 @@ dataFile.write("\nUsed:\n")
 for item in usedLoginList:
     dataFile.write(item[0].strftime("%x") + " " + item[1] + "\n")
 
+# close file
 dataFile.close()
