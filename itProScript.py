@@ -1,5 +1,6 @@
 # imports
 import os
+import os.path as path
 from HTMLParser import HTMLParser
 import re
 import datetime
@@ -23,7 +24,10 @@ dlDirPath = os.path.expanduser("~")
 dlDirPath += str(os.path.sep + "Downloads")
 
 # get saved .html file
-htmlFilePath = dlDirPath + str(os.path.sep + "ITPRoTV ProPortal.html")
+if(path.exists(dlDirPath + str(os.path.sep + "ITProTV ProPortal.html"))):
+    htmlFilePath = dlDirPath + str(os.path.sep + "ITProTV ProPortal.html")
+elif (path.exists(dlDirPath + str(os.path.sep + "ITPRoTV ProPortal.htm"))):
+    htmlFilePath = dlDirPath + str(os.path.sep + "ITProTV ProPortal.htm")
 htmlFile = open(htmlFilePath) # TODO: exception handling
 
 # parse .html file
